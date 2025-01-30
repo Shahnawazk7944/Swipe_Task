@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlinSerialization)
+
+    alias(libs.plugins.ksp.annotation.processor) version libs.versions.kspAnnotationProcessor
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -42,6 +46,23 @@ android {
 dependencies {
     //Project Modules
     implementation(project(":core:designSystem"))
+    implementation(project(":core:models"))
+    implementation(project(":core:data"))
+
+    //navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // Dagger Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)   //KSP Annotation Processor
+    implementation(libs.androidx.hilt.navigation.compose) //hilt for navigation
+
+    //Serialization
+    implementation(libs.kotlinx.serialization.json)
+    
+    //Arrow core lib
+    implementation(libs.arrow.core)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

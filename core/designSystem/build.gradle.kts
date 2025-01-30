@@ -46,7 +46,7 @@ android {
 
 dependencies {
     //Extended Icons
-    implementation(libs.androidx.material.icons.extended.android)
+    api(libs.androidx.material.icons.extended.android)
 
     //coil
     implementation(libs.coil.compose)
