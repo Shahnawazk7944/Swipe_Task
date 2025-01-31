@@ -1,9 +1,11 @@
 package dev.swipe_task.presentation.features.addProduct.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.data.repository.ProductRepository
+import dev.models.AddProductRequest
 import dev.swipe_task.presentation.features.utils.Validator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +24,10 @@ class AddProductViewModel @Inject constructor(
 
     fun addProductEvents(event: AddProductEvents) {
         when (event) {
-            AddProductEvents.AddProduct -> {}
+            is AddProductEvents.AddProduct -> {
+                addProduct(event.addProductsRequest)
+            }
+
             AddProductEvents.ClearFailure -> {
                 _state.update { it.copy(failure = null) }
             }
@@ -66,22 +71,55 @@ class AddProductViewModel @Inject constructor(
                     )
                 }
             }
+
+            is AddProductEvents.ProductImagesChanged -> {
+                _state.update { currentState ->
+                    currentState.copy(
+                        productImages = currentState.productImages + event.productImage
+                    )
+                }
+            }
+
+            is AddProductEvents.ProductImageBitmapChanged -> {
+                _state.update { currentState ->
+                    currentState.copy(
+                        imageBitmaps = currentState.imageBitmaps + event.productImageBitmaps
+                    )
+                }
+            }
+
+            AddProductEvents.ClearAddedProduct -> {
+                _state.update { it.copy(addedProduct = null) }
+            }
         }
     }
 
-    private fun getProducts() {
+    private fun addProduct(addProductRequest: AddProductRequest) {
         _state.update { it.copy(loading = true) }
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getProducts()
-                .onRight { products ->
+            repository.addProductRequest(addProductRequest = addProductRequest)
+                .onRight { addedProduct ->
                     _state.update {
                         it.copy(
+                            addedProduct = addedProduct,
                             loading = false
                         )
+                    }.also {
+                        _state.update {
+                            it.copy(
+                                productName = "", productNameError = null,
+                                productType = "", productTypeError = null,
+                                price = "", priceError = null,
+                                tax = "", taxError = null,
+                                productImages = emptyList(), imageBitmaps = emptyList()
+                            )
+                        }
                     }
+                    Log.d("---- vmAdded","$addedProduct")
                 }.onLeft { failure ->
-                    _state.update { it.copy(failure = failure, loading = false) }
-                }
+                    Log.d("---- vmAdd","$failure")
+                _state.update { it.copy(failure = failure, loading = false) }
+            }
         }
     }
 

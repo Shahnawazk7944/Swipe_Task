@@ -86,8 +86,12 @@ fun OutlinedInputField(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.onBackground,
                 unfocusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                //temporarily disabled
+                disabledContainerColor = MaterialTheme.colorScheme.onBackground,
                 focusedTextColor = MaterialTheme.colorScheme.secondary,
                 unfocusedTextColor = MaterialTheme.colorScheme.secondary,
+                //temporarily disabled
+                disabledTextColor = MaterialTheme.colorScheme.secondary,
                 unfocusedLeadingIconColor = MaterialTheme.colorScheme.outline,
                 focusedLeadingIconColor = MaterialTheme.colorScheme.outline,
                 disabledLeadingIconColor = MaterialTheme.colorScheme.outline,
@@ -101,7 +105,9 @@ fun OutlinedInputField(
                 disabledPlaceholderColor = MaterialTheme.colorScheme.outline,
                 errorPlaceholderColor = MaterialTheme.colorScheme.outline,
                 unfocusedBorderColor = Color.Transparent,
-                disabledBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                //temporarily disabled
+                //disabledBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                disabledBorderColor = Color.Transparent,
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 errorBorderColor = MaterialTheme.colorScheme.errorContainer,
             )

@@ -1,5 +1,6 @@
 package dev.models
 
+import android.net.Uri
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 import java.net.URI
@@ -20,7 +21,7 @@ data class AddProductRequest(
     val productType: String,
     val price: String,
     val tax: String,
-    val images: List<URI> = emptyList()
+    val images: List<Uri> = emptyList()
 )
 
 @Serializable

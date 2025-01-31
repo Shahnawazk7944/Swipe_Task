@@ -1,6 +1,11 @@
 package dev.swipe_task.presentation.features.addProduct.viewmodels
 
+import android.graphics.Bitmap
+import android.net.Uri
+import dev.models.AddProductRequest
+import dev.models.AddProductResponse
 import dev.models.ErrorResponse
+
 
 data class AddProductStates(
     val loading: Boolean = false,
@@ -17,13 +22,21 @@ data class AddProductStates(
 
     val tax: String = "",
     val taxError: String? = null,
+
+    val productImages: List<Uri> = emptyList(),
+    val imageBitmaps: List<Bitmap?> = emptyList(),
+
+    val addedProduct: AddProductResponse? = null
 )
 
 sealed class AddProductEvents {
-    data object AddProduct : AddProductEvents()
+    data class AddProduct(val addProductsRequest: AddProductRequest) : AddProductEvents()
     data object ClearFailure : AddProductEvents()
     data class ProductNameChanged(val productName: String) : AddProductEvents()
     data class ProductTypeChanged(val productType: String) : AddProductEvents()
     data class PriceChanged(val price: String) : AddProductEvents()
     data class TaxChanged(val tax: String) : AddProductEvents()
+    data class ProductImagesChanged(val productImage: Uri) : AddProductEvents()
+    data class ProductImageBitmapChanged(val productImageBitmaps: Bitmap) : AddProductEvents()
+    data object ClearAddedProduct : AddProductEvents()
 }

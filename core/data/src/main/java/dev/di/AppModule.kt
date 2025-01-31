@@ -1,5 +1,6 @@
 package dev.di
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -7,6 +8,7 @@ import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.components.SingletonComponent
 import dev.data.remote.Apis
 import dev.data.repository.ProductRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.data.repository.ProductRepositoryImpl
 import dev.data.util.Constants.BASE_URL
 import retrofit2.Retrofit
@@ -31,8 +33,9 @@ object AppModule {
 object RepositoryModule {
     @Provides
     fun provideProductRepository(
-        apis: Apis
+        apis: Apis,
+        @ApplicationContext context: Context
     ): ProductRepository {
-        return ProductRepositoryImpl(apis)
+        return ProductRepositoryImpl(apis,context)
     }
 }

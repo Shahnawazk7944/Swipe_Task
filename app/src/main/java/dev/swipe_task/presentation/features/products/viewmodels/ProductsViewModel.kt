@@ -1,11 +1,11 @@
 package dev.swipe_task.presentation.features.products.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.data.repository.ProductRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -29,6 +29,10 @@ class ProductsViewModel @Inject constructor(
             ProductsEvents.ClearFailure -> {
                 _state.update { it.copy(failure = null) }
             }
+
+            is ProductsEvents.SearchProducts -> {
+                _state.update { it.copy(searchQuery = event.query) }
+            }
         }
     }
 
@@ -37,6 +41,7 @@ class ProductsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.getProducts()
                 .onRight { products ->
+                    delay(1500)
                     _state.update {
                         it.copy(
                             products = products,
