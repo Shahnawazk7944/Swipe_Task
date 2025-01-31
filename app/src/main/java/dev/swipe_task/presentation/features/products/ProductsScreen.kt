@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -114,11 +117,21 @@ fun ProductsScreenContent(
         },
     ) { paddingValues ->
         when {
-            !state.loading -> {
+            state.loading -> {
+                ProductsShimmerEffect(paddingValues)
+            }
+
+            state.failure != null -> {
+                EmptyErrorScreen(state.failure.error.toString())
+            }
+
+            else -> {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
+                        .padding(
+                           paddingValues
+                        )
                         .padding(horizontal = MaterialTheme.spacing.medium)
                 ) {
                     SearchBarSection(
@@ -171,14 +184,6 @@ fun ProductsScreenContent(
                         }
                     }
                 }
-            }
-
-            state.failure != null -> {
-                EmptyErrorScreen(state.failure.error.toString())
-            }
-
-            else -> {
-                ProductsShimmerEffect(paddingValues)
             }
         }
         if (selectedProduct.value != null) {
