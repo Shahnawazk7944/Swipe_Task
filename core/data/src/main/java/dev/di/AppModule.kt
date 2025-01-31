@@ -9,6 +9,8 @@ import dagger.hilt.components.SingletonComponent
 import dev.data.remote.Apis
 import dev.data.repository.ProductRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.data.repository.ConnectivityRepository
+import dev.data.repository.ConnectivityRepositoryImpl
 import dev.data.repository.ProductRepositoryImpl
 import dev.data.util.Constants.BASE_URL
 import retrofit2.Retrofit
@@ -37,5 +39,12 @@ object RepositoryModule {
         @ApplicationContext context: Context
     ): ProductRepository {
         return ProductRepositoryImpl(apis,context)
+    }
+
+    @Provides
+    fun provideConnectivityRepository(
+        @ApplicationContext context: Context
+    ): ConnectivityRepository {
+        return ConnectivityRepositoryImpl(context)
     }
 }
