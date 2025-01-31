@@ -15,7 +15,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
@@ -24,35 +23,29 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun addProductRequest(addProductRequest: AddProductRequest): Either<ErrorResponse, AddProductResponse> {
         return try {
-            //tried many approaches but still image is not uploading i have to read more about but don't have time will look into it later
             fun uriToFile(context: Context, uri: Uri): File {
+                val fileExtension =
+                    context.contentResolver.getType(uri)?.split("/")?.lastOrNull() ?: "jpg"
+                val file =
+                    File(context.cacheDir, "temp_file_${System.currentTimeMillis()}.$fileExtension")
+
                 val inputStream = context.contentResolver.openInputStream(uri)
-                val file = File(context.cacheDir, "temp_file_${System.currentTimeMillis()}")
-                try {
-                    val outputStream = FileOutputStream(file)
-                    inputStream?.copyTo(outputStream)
-                    inputStream?.close()
-                    outputStream.close()
-                } catch (e: IOException) {
-                    Log.e("FileError", "Failed to create file: ${e.message}")
-                }
+                val outputStream = FileOutputStream(file)
+                inputStream?.use { input -> outputStream.use { output -> input.copyTo(output) } }
+
                 return file
             }
 
             val files = addProductRequest.images.mapNotNull { uri ->
                 val file = uriToFile(context, uri)
                 if (!file.exists() || file.length() == 0L) {
-                    Log.e("FileError", "File is empty or doesn't exist: ${file.path}")
+                    Log.e("FileError", "File is empty: ${file.path}")
                     null
                 } else {
-                    Log.d("FileUpload", "Uploading file: ${file.name} - ${file.path}")
-                    val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-                    MultipartBody.Part.createFormData("files", file.name, requestFile)
+                    val mimeType = context.contentResolver.getType(uri) ?: "image/*"
+                    val requestFile = file.asRequestBody(mimeType.toMediaTypeOrNull())
+                    MultipartBody.Part.createFormData("files[]", file.name, requestFile)
                 }
-            }
-
-            if (files.isEmpty()) {
-                Log.e("FileError", "No files were added to the request!")
             }
 
             val response = api.addProductRequest(
@@ -60,7 +53,7 @@ class ProductRepositoryImpl @Inject constructor(
                 productType = addProductRequest.productType.toRequestBody("text/plain".toMediaTypeOrNull()),
                 price = addProductRequest.price.toRequestBody("text/plain".toMediaTypeOrNull()),
                 tax = addProductRequest.tax.toRequestBody("text/plain".toMediaTypeOrNull()),
-                files = files
+                files = files.toTypedArray()
             )
 
             if (response.isSuccessful && response.body() != null) {

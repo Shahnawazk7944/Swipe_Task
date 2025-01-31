@@ -37,7 +37,7 @@ class ProductsViewModel @Inject constructor(
     }
 
     private fun getProducts() {
-        _state.update { it.copy(loading = true) }
+        _state.update { it.copy(loading = true, failure = null) }
         viewModelScope.launch(Dispatchers.IO) {
             repository.getProducts()
                 .onRight { products ->
@@ -49,7 +49,6 @@ class ProductsViewModel @Inject constructor(
                         )
                     }
                 }.onLeft { failure ->
-
                     _state.update { it.copy(failure = failure, loading = false) }
                 }
         }
