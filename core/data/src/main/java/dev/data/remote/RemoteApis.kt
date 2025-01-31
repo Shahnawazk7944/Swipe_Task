@@ -18,7 +18,7 @@ interface Apis {
         @Part("product_type") productType: RequestBody,
         @Part("price") price: RequestBody,
         @Part("tax") tax: RequestBody,
-        @Part files: List<MultipartBody.Part> = emptyList(),
+        @Part vararg files: MultipartBody.Part
     ): Response<AddProductResponse>
 
     @GET("get")
