@@ -4,11 +4,13 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import arrow.core.Either
+import dev.data.local.ProductLocalDataSource
 import dev.data.remote.Apis
 import dev.models.AddProductRequest
 import dev.models.AddProductResponse
 import dev.models.ErrorResponse
 import dev.models.Product
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -18,7 +20,9 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
-    private val api: Apis, private val context: Context
+    private val api: Apis,
+    private val context: Context,
+    private val productLocalDataSource: ProductLocalDataSource
 ) : ProductRepository {
 
     override suspend fun addProductRequest(addProductRequest: AddProductRequest): Either<ErrorResponse, AddProductResponse> {
@@ -87,6 +91,29 @@ class ProductRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Either.Left(ErrorResponse(error = e.message.toString()))
+        }
+    }
+
+    override suspend fun insertProduct(addProductRequest: AddProductRequest): Either<Unit, Unit> {
+        try {
+            productLocalDataSource.insertProduct(addProductRequest)
+            return Either.Right(Unit)
+        } catch (e: Exception) {
+            return Either.Left(Unit)
+        }
+    }
+
+
+    override suspend fun getAllProducts(): Flow<List<AddProductRequest>> {
+        return productLocalDataSource.getAllProducts()
+    }
+
+    override suspend fun deleteAllProducts(): Either<Unit, Unit> {
+        try {
+            productLocalDataSource.deleteAllProducts()
+            return Either.Right(Unit)
+        } catch (e: Exception) {
+            return Either.Left(Unit)
         }
     }
 }

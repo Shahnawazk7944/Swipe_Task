@@ -22,13 +22,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import dev.designsystem.theme.Swipe_TaskTheme
 import dev.designsystem.theme.spacing
@@ -50,81 +50,80 @@ fun Modifier.shimmerEffect() = composed {
 
 @Composable
 fun ProductsShimmerEffect(innerPadding: PaddingValues) {
-        Column(
-            horizontalAlignment = Alignment.Start,
+    Column(
+        horizontalAlignment = Alignment.Start,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .padding(top = 20.dp, start = 12.dp, end = 12.dp)
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(top = 20.dp, start = 12.dp, end = 12.dp)
+                .fillMaxWidth()
+                .height(50.dp)
+                .padding(horizontal = MaterialTheme.spacing.extraLarge)
+                .clip(RoundedCornerShape(60.dp)).background(MaterialTheme.colorScheme.surface)
+                .shimmerEffect()
+        )
+        Spacer(Modifier.height(20.dp))
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier,
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(horizontal = MaterialTheme.spacing.extraLarge)
-                    .clip(RoundedCornerShape(60.dp))
-                    .shimmerEffect()
-            )
-            Spacer(Modifier.height(20.dp))
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall)
-            ) {
-                items(10) {
-                    Column(
+            items(10) {
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 0.dp)
+                        .clip(RoundedCornerShape(25.dp))
+                        .shimmerEffect(),
+                    horizontalAlignment = Alignment.Start,
+                ) {
+                    Box(
                         modifier = Modifier
-                            .padding(horizontal = 0.dp)
-                            .clip(RoundedCornerShape(25.dp))
-                            .shimmerEffect(),
-                        horizontalAlignment = Alignment.Start,
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .padding(all = 20.dp)
-                                .clip(RoundedCornerShape(20.dp))
-                                .size(285.dp, 243.dp)
-                                .shimmerEffect()
-                        )
-                        Box(
-                            modifier = Modifier
-                                .height(25.dp)
-                                .fillMaxWidth()
-                                .padding(horizontal = MaterialTheme.spacing.extraLarge)
-                                .clip(MaterialTheme.shapes.small)
-                                .shimmerEffect()
-                        )
-                        Spacer(Modifier.height(15.dp))
-                        Box(
-                            modifier = Modifier
-                                .height(25.dp)
-                                .width(100.dp)
-                                .padding(start = MaterialTheme.spacing.extraLarge)
-                                .clip(MaterialTheme.shapes.small)
-                                .shimmerEffect()
-                        )
-                        Spacer(Modifier.height(15.dp))
-                        Box(
-                            modifier = Modifier
-                                .height(25.dp)
-                                .width(100.dp)
-                                .padding(start = MaterialTheme.spacing.extraLarge)
-                                .clip(MaterialTheme.shapes.small)
-                                .shimmerEffect()
-                        )
-                        Spacer(Modifier.height(20.dp))
+                            .padding(all = 20.dp)
+                            .clip(RoundedCornerShape(20.dp))
+                            .size(285.dp, 243.dp)
+                            .shimmerEffect()
+                    )
+                    Box(
+                        modifier = Modifier
+                            .height(25.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.spacing.extraLarge)
+                            .clip(MaterialTheme.shapes.small)
+                            .shimmerEffect()
+                    )
+                    Spacer(Modifier.height(15.dp))
+                    Box(
+                        modifier = Modifier
+                            .height(25.dp)
+                            .width(100.dp)
+                            .padding(start = MaterialTheme.spacing.extraLarge)
+                            .clip(MaterialTheme.shapes.small)
+                            .shimmerEffect()
+                    )
+                    Spacer(Modifier.height(15.dp))
+                    Box(
+                        modifier = Modifier
+                            .height(25.dp)
+                            .width(100.dp)
+                            .padding(start = MaterialTheme.spacing.extraLarge)
+                            .clip(MaterialTheme.shapes.small)
+                            .shimmerEffect()
+                    )
+                    Spacer(Modifier.height(20.dp))
 
-                    }
                 }
             }
         }
+    }
 
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun ShimmerEffectPreview() {

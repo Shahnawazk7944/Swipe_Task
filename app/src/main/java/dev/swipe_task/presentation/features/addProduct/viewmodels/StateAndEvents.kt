@@ -26,7 +26,10 @@ data class AddProductStates(
     val productImages: List<Uri> = emptyList(),
     val imageBitmaps: List<Bitmap?> = emptyList(),
 
-    val addedProduct: AddProductResponse? = null
+    val addedProduct: AddProductResponse? = null,
+    val isProductRequestAddedToLocalDb: String? = null,
+
+    val isOnline: Boolean = false
 )
 
 sealed class AddProductEvents {
