@@ -2,6 +2,7 @@ package dev.swipe_task.presentation.features.addProduct
 
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -36,7 +37,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -74,6 +74,7 @@ fun AddProductScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
     LaunchedEffect(key1 = state.failure) {
         state.failure?.let {
             snackbarHostState.showSnackbar(
@@ -84,8 +85,12 @@ fun AddProductScreen(
             viewModel.addProductEvents(AddProductEvents.ClearFailure)
         }
     }
-    val context = LocalContext.current
-
+    LaunchedEffect(key1 = state.isProductRequestAddedToLocalDb) {
+        state.isProductRequestAddedToLocalDb?.let {
+            Toast.makeText(context, state.isProductRequestAddedToLocalDb, Toast.LENGTH_LONG).show()
+            viewModel.addProductEvents(AddProductEvents.ClearFailure)
+        }
+    }
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null) {

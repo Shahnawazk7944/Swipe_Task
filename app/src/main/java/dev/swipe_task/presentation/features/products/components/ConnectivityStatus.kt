@@ -15,14 +15,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.designsystem.theme.spacing
 import dev.swipe_task.presentation.features.utils.ConnectivityViewModel
 
 @Composable
-fun ConnectivityStatus(viewModel: ConnectivityViewModel = hiltViewModel()) {
-    val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
+fun ConnectivityStatus(viewModel: ConnectivityViewModel) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val isConnected by viewModel.isConnected.collectAsStateWithLifecycle(
+        lifecycle = lifecycleOwner.lifecycle,
+        initialValue = false
+    )
 
     Box(
         modifier = Modifier

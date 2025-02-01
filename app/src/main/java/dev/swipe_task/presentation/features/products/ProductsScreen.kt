@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -28,16 +27,18 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.designsystem.components.CustomConfirmationDialog
 import dev.designsystem.components.CustomTopBar
 import dev.designsystem.theme.Swipe_TaskTheme
 import dev.designsystem.theme.spacing
@@ -60,24 +61,35 @@ fun ProductsScreen(
         viewModel.productsEvents(ProductsEvents.GetProducts)
     }
     val activity = LocalActivity.current
-    BackHandler {
-        if (activity?.isTaskRoot == true) {
-            activity.finishAndRemoveTask()
-        }
-    }
-
     val state = viewModel.state.collectAsStateWithLifecycle().value
-
+    var showLogoutDialog by remember { mutableStateOf(false) }
+    BackHandler {
+        showLogoutDialog = true
+    }
     ProductsScreenContent(
         state = state,
         onBackClick = {
-            if (activity?.isTaskRoot == true) {
-                activity.finishAndRemoveTask()
-            }
+            showLogoutDialog = true
         },
         onAddProductClick = { onAddProductClick.invoke() },
         events = viewModel::productsEvents
     )
+    if (showLogoutDialog) {
+        CustomConfirmationDialog(
+            icon = Icons.AutoMirrored.Filled.Logout,
+            title = "Oh no! You’re leaving...",
+            message = "Are you sure? Please don't go",
+            confirmButtonText = "Yes, Kick me Out",
+            dismissButtonText = "Nah, Just Kidding",
+            onConfirm = {
+                showLogoutDialog = false
+                if (activity?.isTaskRoot == true) {
+                    activity.finishAndRemoveTask()
+                }
+            },
+            onDismiss = { showLogoutDialog = false }
+        )
+    }
 }
 
 
@@ -130,7 +142,7 @@ fun ProductsScreenContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(
-                           paddingValues
+                            paddingValues
                         )
                         .padding(horizontal = MaterialTheme.spacing.medium)
                 ) {
